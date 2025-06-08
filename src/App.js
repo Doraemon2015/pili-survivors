@@ -3,7 +3,7 @@ import { Howl, Howler } from 'howler'; // 引入 Howler.js 庫
 
 // Tailwind CSS is assumed to be available.
 
-const PIXEL_SCALE = 2.5; // 用於放大遊戲畫面，讓像素風格更明顯
+const PIXEL_SCALE = 2.1; // 用於放大遊戲畫面，讓像素風格更明顯
 
 // 遊戲常量
 const GAME_DURATION = 10 * 60 * 1000; // 10分鐘 (毫秒)
@@ -23,9 +23,9 @@ const PILI_CHARACTER = {
 };
 
 const PILI_ENEMIES = [
-  { name: "妖道角", icon: "�", speed: 0.01, health: 10, exp: 10, color: "bg-gray-700" }, // 降低妖道角速度
-  { name: "魔兵", icon: "👹", speed: 0.012, health: 20, exp: 20, color: "bg-red-800" },
-  { name: "羅喉部眾", icon: "👿", speed: 0.013, health: 30, exp: 30, color: "bg-purple-900" }, // 新增敵人
+  { name: "妖道角", icon: "�", speed: 0.01, health: 100, exp: 15, color: "bg-gray-700" }, // 降低妖道角速度
+  { name: "魔兵", icon: "👹", speed: 0.012, health: 200, exp: 30, color: "bg-red-800" },
+  { name: "羅喉部眾", icon: "👿", speed: 0.013, health: 300, exp: 60, color: "bg-purple-900" }, // 新增敵人
 ];
 
 const PILI_WEAPONS = [
@@ -49,7 +49,7 @@ const PILI_WEAPONS = [
   },
   {
     id: 'weapon-jian-qi',
-    name: "滅世無敵刀",
+    name: "達摩一指插",
     icon: "🗡️",
     type: "projectile", // 投射物攻擊
     damage: 150,
@@ -67,27 +67,7 @@ const PILI_WEAPONS = [
       { damage: 50, cooldown: -200, count: 8, description: "提升傷害與數量" },
     ]
   },
-  {
-    id: 'weapon-jian-qi',
-    name: "達摩一指插",
-    icon: "🗡️",
-    type: "projectile", // 投射物攻擊
-    damage: 200,
-    cooldown: 3000,
-    speed: 5,
-    count: 1, // 每次發射數量
-    projectileRadius: 15, // 投射物半徑加大
-    description: "手指命中敵人要害。",
-    level: 1,
-    maxLevel: 5,
-    upgrades: [
-      { damage: 500, cooldown: -200, count: 1, description: "提升傷害與數量" },
-      { damage: 500, cooldown: -200, count: 1, description: "提升傷害與數量" },
-      { damage: 500, cooldown: -200, count: 1, description: "提升傷害與數量" },
-      { damage: 500, cooldown: -200, count: 1, description: "提升傷害與數量" },
-    ]
-  },
-  {
+    {
     id: 'passive-light-foot',
     name: "輕功",
     icon: "👟",
