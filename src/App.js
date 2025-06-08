@@ -3,45 +3,45 @@ import { Howl, Howler } from 'howler'; // 引入 Howler.js 庫
 
 // Tailwind CSS is assumed to be available.
 
-const PIXEL_SCALE = 2.1; // 用於放大遊戲畫面，讓像素風格更明顯
+const PIXEL_SCALE = 2.1; // 用於放大遊戲畫面，讓像素風格更明顯 (用戶調整)
 
 // 遊戲常量
 const GAME_DURATION = 10 * 60 * 1000; // 10分鐘 (毫秒)
 const PLAYER_RADIUS = 16;
 const ENEMY_RADIUS = 12;
 const EXP_GEM_RADIUS = 8;
-const BASE_MAGNET_RADIUS = 60; // 基礎經驗寶石吸取範圍
+const BASE_MAGNET_RADIUS = 60; // 基礎經驗寶石吸取範圍 (用戶調整)
 
 // 霹靂布袋戲角色及元素設定
 const PILI_CHARACTER = {
-  name: "秦假仙",
-  icon: "✨", // 代表秦假仙
-  health: 99999, // 將生命值調回正常，方便測試
+  name: "秦假仙", // 用戶指定角色
+  icon: "✨", // 代表秦假仙 (用戶指定 icon)
+  health: 9999999, // 秦假仙生命值高達99999，讓遊戲更容易 (用戶調整)
   speed: 0.03, // 降低初始速度
   magnetRadius: BASE_MAGNET_RADIUS, // 初始磁力範圍
   invincibilityDuration: 3000, // 初始無敵時間 (毫秒)
 };
 
 const PILI_ENEMIES = [
-  { name: "妖道角", icon: "�", speed: 0.01, health: 100, exp: 15, color: "bg-gray-700" }, // 降低妖道角速度
-  { name: "魔兵", icon: "👹", speed: 0.012, health: 200, exp: 30, color: "bg-red-800" },
-  { name: "羅喉部眾", icon: "👿", speed: 0.013, health: 300, exp: 60, color: "bg-purple-900" }, // 新增敵人
+  { name: "妖道角", icon: "💀", speed: 0.01, health: 100, exp: 15, color: "bg-gray-700" }, // 修正icon，更新血量與經驗值 (用戶調整)
+  { name: "魔兵", icon: "👹", speed: 0.012, health: 200, exp: 30, color: "bg-red-800" }, // 更新血量與經驗值 (用戶調整)
+  { name: "羅喉部眾", icon: "👿", speed: 0.013, health: 300, exp: 60, color: "bg-purple-900" }, // 更新血量與經驗值 (用戶調整)
 ];
 
 const PILI_WEAPONS = [
   {
     id: 'weapon-fu-chen',
-    name: "鬼氣貫腦",
+    name: "鬼氣貫腦", // 用戶新名稱
     icon: "💨",
     type: "melee", // 近戰範圍攻擊
-    damage: 100, // 調整初始傷害，確保能擊殺敵人
+    damage: 100, // 用戶新傷害值
     cooldown: 1000, // 毫秒
     radius: 160, // 攻擊範圍
-    description: "鬼氣貫腦範圍內敵人受損。",
+    description: "鬼氣貫腦範圍內敵人受損。", // 用戶新描述
     level: 1,
     maxLevel: 5,
     upgrades: [
-      { damage: 20, cooldown: -100, radius: 20, description: "提升傷害與範圍" },
+      { damage: 20, cooldown: -100, radius: 20, description: "提升傷害與範圍" }, // 用戶新升級數值
       { damage: 30, cooldown: -100, radius: 20, description: "提升傷害與範圍" },
       { damage: 40, cooldown: -100, radius: 20, description: "提升傷害與範圍" },
       { damage: 50, cooldown: -100, radius: 20, description: "提升傷害與範圍" },
@@ -49,25 +49,25 @@ const PILI_WEAPONS = [
   },
   {
     id: 'weapon-jian-qi',
-    name: "達摩一指插",
+    name: "達摩一指插", // 用戶新名稱
     icon: "🗡️",
     type: "projectile", // 投射物攻擊
-    damage: 150,
+    damage: 150, // 用戶新傷害值
     cooldown: 2000,
     speed: 5,
     count: 1, // 每次發射數量
     projectileRadius: 15, // 投射物半徑加大
-    description: "發射一道刀氣穿透敵人。",
+    description: "發射一道刀氣穿透敵人。", // 用戶新描述
     level: 1,
     maxLevel: 5,
     upgrades: [
-      { damage: 50, cooldown: -200, count: 2, description: "提升傷害與數量" },
+      { damage: 50, cooldown: -200, count: 2, description: "提升傷害與數量" }, // 用戶新升級數值
       { damage: 50, cooldown: -200, count: 4, description: "提升傷害與數量" },
       { damage: 50, cooldown: -200, count: 6, description: "提升傷害與數量" },
       { damage: 50, cooldown: -200, count: 8, description: "提升傷害與數量" },
     ]
   },
-    {
+  {
     id: 'passive-light-foot',
     name: "輕功",
     icon: "👟",
@@ -82,7 +82,7 @@ const PILI_WEAPONS = [
     ]
   },
   {
-    id: 'passive-magnet-aura',
+    id: 'passive-magnet-aura', // 確保使用正確的 ID
     name: "天罡真氣", // 新增被動技能
     icon: "🧲",
     type: "passive",
@@ -102,35 +102,11 @@ const App = () => {
   const gameLoopRef = useRef();
   const lastUpdateTimeRef = useRef(0);
   const inputRef = useRef({ w: false, a: false, s: false, d: false });
-  const playerMovementSoundCooldownRef = useRef(0); // For player movement sound
+  const playerMovementSoundCooldownRef = useRef(0); // 玩家移動音效冷卻計時器
 
   // 設置音效對象
   const sounds = useRef({});
   useEffect(() => {
-    // 初始化所有音效。請將 'path/to/your/sound.mp3' 替換為您的實際音效檔案路徑。
-    // 音效檔案應放置在 public 資料夾下的 'sounds' 子資料夾中，例如 'public/sounds/game_start.mp3'。
-    // 在這裡直接使用相對路徑，Create React App 會在建構時處理這些路徑。
-    const getSoundPath = (filename) => `/sounds/${filename}`; // 修正：移除 process.env.PUBLIC_URL
-
-    sounds.current = {
-      gameStart: new Howl({ src: [getSoundPath('game_start.mp3')], volume: 0.5 }),
-      playerMove: new Howl({ src: [getSoundPath('player_move.mp3')], volume: 0.1, rate: 1.2 }), // 腳步聲可調低音量和播放速度
-      enemySpawn: new Howl({ src: [getSoundPath('enemy_spawn.mp3')], volume: 0.3 }),
-      meleeAttack: new Howl({ src: [getSoundPath('melee_attack.mp3')], volume: 0.6 }),
-      projectileCast: new Howl({ src: [getSoundPath('projectile_cast.mp3')], volume: 0.7 }),
-      projectileHit: new Howl({ src: [getSoundPath('projectile_hit.mp3')], volume: 0.4 }),
-      enemyDeath: new Howl({ src: [getSoundPath('enemy_death.mp3')], volume: 0.5 }),
-      playerHurt: new Howl({ src: [getSoundPath('player_hurt.mp3')], volume: 0.8 }),
-      gemCollect: new Howl({ src: [getSoundPath('gem_collect.mp3')], volume: 0.5 }),
-      levelUp: new Howl({ src: [getSoundPath('level_up.mp3')], volume: 0.7 }),
-      gameWin: new Howl({ src: [getSoundPath('game_win.mp3')], volume: 0.9 }),
-      gameOver: new Howl({ src: [getSoundPath('game_over.mp3')], volume: 0.9, loop: false }), // 遊戲結束音樂通常不循環
-      backgroundMusic: new Howl({ src: [getSoundPath('bg_music.mp3')], volume: 0.3, loop: true }) // 背景音樂循環播放
-    };
-
-    // Howler.js 需要用戶互動才能播放。通常在遊戲開始按鈕點擊後播放背景音樂。
-    // 在這裡不自動播放，因為遊戲啟動邏輯會處理。
-
     // 清理函數：組件卸載時停止所有音效
     return () => {
       Howler.stop();
@@ -146,13 +122,13 @@ const App = () => {
     // 只有當音效存在且沒有在播放時才播放（對於非循環音效）
     if (sounds.current[soundName] && !sounds.current[soundName].playing()) {
       sounds.current[soundName].play();
-      console.log(`PLAY_SOUND: ${soundName}`); // 同時在控制台輸出，方便調試
+      console.log(`播放音效: ${soundName}`); // 同時在控制台輸出，方便調試
     } else if (sounds.current[soundName]) {
         // 對於循環音效如背景音樂，如果已經在播放就不重複調用 play()
         // 對於其他音效，如果頻繁調用可能會被截斷，但對於單次事件觸發的音效是沒問題的
-        console.log(`PLAY_SOUND: ${soundName} (already playing or queued)`);
+        console.log(`播放音效: ${soundName} (已在播放或排隊中)`);
     } else {
-        console.warn(`PLAY_SOUND: Sound ${soundName} not found.`);
+        console.warn(`播放音效: 找不到音效 ${soundName}。請確認音效檔案是否存在於 public/sounds 資料夾。`);
     }
   }, []);
 
@@ -218,6 +194,28 @@ const App = () => {
 
   // 遊戲開始
   const startGame = useCallback(() => {
+    // 在遊戲開始時初始化音效，解決 Invalid URL 錯誤
+    // 音效檔案應放置在 public 資料夾下的 'sounds' 子資料夾中，例如 'public/sounds/game_start.mp3'。
+    // 直接使用相對路徑，Create React App 會在建構時處理這些路徑。
+    const getSoundPath = (filename) => `/sounds/${filename}`;
+
+    // 重新初始化 sounds.current，確保包含所有現有檔案的引用
+    sounds.current = {
+      gameStart: new Howl({ src: [getSoundPath('game_start.mp3')], volume: 0.5 }),
+      playerMove: new Howl({ src: [getSoundPath('player_move.mp3')], volume: 0.1, rate: 1.2 }),
+      enemySpawn: new Howl({ src: [getSoundPath('enemy_spawn.mp3')], volume: 0.3 }),
+      meleeAttack: new Howl({ src: [getSoundPath('melee_attack.mp3')], volume: 0.6 }),
+      projectileCast: new Howl({ src: [getSoundPath('projectile_cast.mp3')], volume: 0.7 }), // 重新啟用
+      projectileHit: new Howl({ src: [getSoundPath('projectile_hit.mp3')], volume: 0.4 }),
+      enemyDeath: new Howl({ src: [getSoundPath('enemy_death.mp3')], volume: 0.5 }),
+      playerHurt: new Howl({ src: [getSoundPath('player_hurt.mp3')], volume: 0.8 }), // 重新啟用
+      gemCollect: new Howl({ src: [getSoundPath('gem_collect.mp3')], volume: 0.5 }), // 重新啟用
+      levelUp: new Howl({ src: [getSoundPath('level_up.mp3')], volume: 0.7 }),
+      gameWin: new Howl({ src: [getSoundPath('game_win.mp3')], volume: 0.9 }), // 重新啟用
+      gameOver: new Howl({ src: [getSoundPath('game_over.mp3')], volume: 0.9, loop: false }),
+      backgroundMusic: new Howl({ src: [getSoundPath('bg_music.mp3')], volume: 0.3, loop: true })
+    };
+
     setPlayer({
       x: canvasDimensions.width / 2,
       y: canvasDimensions.height / 2,
@@ -226,7 +224,7 @@ const App = () => {
       speed: PILI_CHARACTER.speed,
       experience: 0,
       level: 1,
-      weapons: [{ ...PILI_WEAPONS[0], lastFired: 0 }], // 初始武器：拂塵
+      weapons: [{ ...PILI_WEAPONS[0], lastFired: 0 }], // 初始武器：鬼氣貫腦
       passiveEffects: {},
       magnetRadius: PILI_CHARACTER.magnetRadius, // 重置磁力範圍
       invincibilityTimer: PILI_CHARACTER.invincibilityDuration, // 設定初始無敵時間
@@ -296,7 +294,7 @@ const App = () => {
       }
     ]);
     playSound('enemySpawn'); // 敵人生成音效
-  }, [canvasDimensions, gameTime, player, playSound]);
+  }, [canvasDimensions.width, gameTime, player, playSound]);
 
   // 處理玩家升級
   const handleLevelUp = useCallback(() => {
@@ -331,7 +329,7 @@ const App = () => {
       // 處理特殊選項，例如回復生命
       if (selectedOption.id === 'heal-hp') {
         const newHealth = Math.min(prevPlayer.maxHealth, prevPlayer.health + 30);
-        playSound('healthRecover'); // 生命回復音效
+        // playSound('healthRecover'); // 生命回復音效 (此檔案如果存在，您可以啟用)
         return { ...prevPlayer, health: newHealth };
       }
 
@@ -406,7 +404,7 @@ const App = () => {
 
     if (gameTime >= GAME_DURATION) {
       setGameState('gameWin'); // 遊戲勝利
-      playSound('gameWin'); // 遊戲勝利音效
+      playSound('gameWin'); // 遊戲勝利音效 (重新啟用)
       stopAllSounds(); // 停止所有音效
       setEnemies([]); // 清除所有敵人
       setExpGems([]); // 清除所有經驗寶石
@@ -484,7 +482,7 @@ const App = () => {
             setProjectiles([]); // 清除所有投射物
             setActiveAttackVisuals([]); // 清除所有攻擊視覺效果
           } else {
-            playSound('playerHurt'); // 玩家受傷音效
+            playSound('playerHurt'); // 玩家受傷音效 (重新啟用)
             // 每次受傷後給予短暫無敵，避免連續傷害
             return { ...prevPlayer, health: newHealth, invincibilityTimer: 500, hitFlashTimer: 200 }; // 受擊後觸發閃爍
           }
@@ -536,7 +534,7 @@ const App = () => {
             updatedWeapon.lastFired = now;
           } else if (weapon.type === 'projectile') {
             // 劍氣攻擊 (生成投射物)
-            playSound('projectileCast');
+            playSound('projectileCast'); // 重新啟用
             // 新增劍氣發招視覺效果
             setActiveAttackVisuals(prev => [...prev, {
                 id: Date.now(),
@@ -646,7 +644,7 @@ const App = () => {
           }
           return { ...prevPlayer, experience: newExp };
         });
-        playSound('gemCollect');
+        playSound('gemCollect'); // 重新啟用
         return false; // 移除已收集的寶石
       } else if (distToPlayer < player.magnetRadius) {
         // 磁力吸取
@@ -673,7 +671,7 @@ const App = () => {
     ctx.fillStyle = '#1e3a8a';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    // 繪製玩家 (素還真)
+    // 繪製玩家 (秦假仙)
     // 無敵狀態下閃爍效果
     const playerOpacity = (player.invincibilityTimer > 0 && Math.floor(gameTime / 100) % 2 === 0) ? 0.4 : 1;
     let playerColor = '#fde047'; // 默認黃色
@@ -971,3 +969,6 @@ const App = () => {
 };
 
 export default App;
+
+
+        
